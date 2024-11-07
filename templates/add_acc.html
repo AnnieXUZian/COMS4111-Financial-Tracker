@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block body %}
+<form id="mainForm">
+    <div class="control-group">
+        <label for="type">Type:</label>
+        <select id="type" name="type" onchange="showForm()" required>
+            <option value="default">Select a type</option>
+            <option value="normal">Normal Account</option>
+            <option value="credit">Credit Card</option>
+        </select>
+    </div>
+</form>
+
+<form id="normal" class="hidden" action="add_normal" method="POST">
+    <h3>Normal Account</h3>
+    <!-- Bank Field -->
+    <div class="control-group">
+        <label for="bank">Bank:</label>
+        <select id="bank" name="bank" required>
+            <option value="default">Select the bank</option>
+            {%for bank in banks%}
+                <option value="{{bank[0]}}">{{bank[0]}}</option>
+            {%endfor%} 
+        </select>
+    </div>
+    <!-- Name Field -->
+    <div class="control-group">
+        <label for="name">Account Name:</label>
+        <input type="text" id="name" name="name" placeholder="Account Name" required>
+    </div>
+    <!-- Balance Field -->
+    <div class="control-group">
+        <label for="balance">Balance:</label>
+        <input type="number" id="balance" name="balance" step="0.01" required>
+    </div>
+    <button type="submit">Add</button>
+</form>
+
+<form id="credit" class="hidden" action="add_credit" method="POST">
+    <h3>Credit Card</h3>
+    <!-- Bank Field -->
+    <div class="control-group">
+        <label for="bank">Bank:</label>
+        <select id="bank" name="bank" required>
+            <option value="default">Select the bank</option>
+            {%for bank in banks%}
+                <option value="{{bank[0]}}">{{bank[0]}}</option>
+            {%endfor%} 
+        </select>
+    </div>
+    <!-- Name Field -->
+    <div class="control-group">
+        <label for="name">Account Name:</label>
+        <input type="text" id="name" name="name" placeholder="Account Name" required>
+    </div>
+    <!-- Balance Field -->
+    <div class="control-group">
+        <label for="balance">Balance:</label>
+        <input type="number" id="balance" name="balance" step="0.01" required>
+    </div>
+    <!-- Available Credit Field -->
+    <div class="control-group">
+        <label for="available-credit">Available Credit:</label>
+        <input type="number" id="available-credit" name="available-credit" step="0.01" required>
+    </div>
+    <!-- credit_limit Field -->
+    <div class="control-group">
+        <label for="balance">Credit Limit:</label>
+        <input type="number" id="credit-limit" name="credit-limit" step="0.01" required>
+    </div>
+    <!-- settlement_day -->
+    <div class="control-group">
+        <label for="settlement-day">Settlement Day:</label>
+        <input type="number" id="settlement-day" name="settlement-day" step="1" required>
+    </div>
+    <!-- payment_day -->
+    <div class="control-group">
+        <label for="payment-day">Payment Day:</label>
+        <input type="number" id="payment-day" name="payment-day" step="1" rrequired>
+    </div>
+    <!-- interest_rate -->
+    <div class="control-group">
+        <label for="interest-rate">Interest Rate:</label>
+        <input type="number" id="interest-rate" name="interest-rate" step="0.01" required>
+    </div>
+
+    <button type="submit">Add</button>
+</form>
+
+
+<script>
+    function showForm() {
+      // Hide both forms initially
+      document.getElementById('normal').classList.add('hidden');
+      document.getElementById('credit').classList.add('hidden');
+  
+      // Get the selected value
+      const selectedOption = document.getElementById('type').value;
+  
+      // Show the appropriate form based on the selection
+      if (selectedOption === 'normal') {
+        document.getElementById('normal').classList.remove('hidden');
+      } else if (selectedOption === 'credit') {
+        document.getElementById('credit').classList.remove('hidden');
+      }
+    }
+  </script>
+{% endblock %}

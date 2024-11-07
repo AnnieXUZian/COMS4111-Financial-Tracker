@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block body %}
+<form action="/add_trx" method="POST">
+    <div class="control-group">
+        <!-- Date Field -->
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" class="add_trx" required>
+    </div>
+    <!-- Category Field -->
+    <div class="control-group">
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <option value="default">Select a category</option>
+            {%for category in categories%}
+                <option value="{{category[0]}}">{{category[0]}}</option>
+            {%endfor%}
+        </select>
+    </div>
+
+    <!-- Amount Field -->
+    <div class="control-group">
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" class="add_trx" required>
+    </div>
+    <!-- Type Field -->
+    <div class="control-group">
+        <label for="type">Type:</label>
+        <select id="type" name="type" required>
+            <option value="default" selected>Select a type</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+        </select>
+    </div>
+    <!-- Account Field -->
+    <div class="control-group">
+        <label for="account">Account:</label>
+        <select id="account" name="account" required>
+            <option value="default" selected>Select an account</option>
+            {%for account in accounts%}
+                <option value="{{account[0]}}">{{account[0]}}</option>
+            {%endfor%}
+        </select>
+    </div>
+    <!-- Submit Button -->
+    <button type="submit">Submit Transaction</button>
+</form>
+{% endblock %}
