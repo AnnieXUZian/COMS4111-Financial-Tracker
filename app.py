@@ -5,11 +5,11 @@ import psycopg2
 app = Flask(__name__)
 
 DATABASE = {
-    'dbname': 'w4111',
-    'user': 'zx2514',
-    'password': 'zx2514',
-    'host': 'w4111.cisxo09blonu.us-east-1.rds.amazonaws.com',
-    'port': '5432'
+    'dbname': '',
+    'user': '',
+    'password': '',
+    'host': '',
+    'port': ''
 }
 
 # Function to create a new database connection
