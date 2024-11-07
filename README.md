@@ -1,4 +1,4 @@
-# Financial-Tracker
+# COMS4111-Financial-Tracker
 
 Our application is a Personal Finance Tracker that helps users manage their income, expenses, and budgets across multiple accounts.
 
