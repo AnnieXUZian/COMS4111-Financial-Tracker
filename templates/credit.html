@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block body %}
+<div>
+    <h2>{{name}}</h2>
+        <table>
+            <tbody>
+                <tr>                
+                    <th>balance</th>
+                    <th>{{balance}}</th>
+                </tr>
+                <tr>                
+                    <th>balance</th>
+                    <th>{{settlement_day}}</th>
+                </tr>
+                <tr>                
+                    <th>Payment Day</th>
+                    <th>{{payment_day}}</th>
+                </tr>
+                <tr>                
+                    <th>Available Credit</th>
+                    <th>{{available_credit}}</th>
+                </tr>
+                <tr>                
+                    <th>Credit Limit</th>
+                    <th>{{credit_limit}}</th>
+                </tr>
+                <tr>                
+                    <th>Interest Rate</th>
+                    <th>{{interest_rate}}</th>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <a href="add_acc" class="button">Add</a> -->
+</div>
+<div>
+    <h2>User Transaction History</h2>
+
+    <!-- Transaction Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Sample Data Rows (Replace these with actual dynamic data) -->
+            {%for trx in trxs%}
+            <tr>
+                <th>{{trx['date']}}</th>
+                <th>{{trx['category']}}</th>
+                <th>{{trx['amount']}}</th>
+                <th>{{trx['type']}}</th>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+<a href="/profile" class="button">Back</a>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="block">
+    <h2>{{name}}</h2>
+        <table>
+            <tbody>
+                <tr>                
+                    <th>balance</th>
+                    <th>{{balance}}</th>
+                </tr>
+            </tbody>
+        </table>
+        <!-- <a href="add_acc" class="button">Add</a> -->
+</div>
+<div class="block">
+    <h2>{{name}} Transaction History</h2>
+
+    <!-- Transaction Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Sample Data Rows (Replace these with actual dynamic data) -->
+            {%for trx in trxs%}
+            <tr>
+                <th>{{trx['date']}}</th>
+                <th>{{trx['category']}}</th>
+                <th>{{trx['amount']}}</th>
+                <th>{{trx['type']}}</th>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+<a href="/profile" class="button">Back</a>
+{% endblock %}
