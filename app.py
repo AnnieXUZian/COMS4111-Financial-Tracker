@@ -22,6 +22,7 @@ def get_db_connection():
         port=DATABASE['port']
     )
     return conn
+##
 
 
 @app.route('/')
@@ -118,7 +119,7 @@ def transactions():
         values.append(amount)
         sum+=amount
     if sum==0:
-        char_data={}
+        chart_data={}
     else:    
         chart_data = {
         "labels": labels,
