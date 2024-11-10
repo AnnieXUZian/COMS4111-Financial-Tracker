@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js library -->
+{% endblock %}
+{% block body %}
+<div class="acc-block">
+    <h2>Accounts</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Accounts</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Sample Data Rows (Replace these with actual dynamic data) -->
+            {%for acc in accs%}
+            <tr>                
+                <th>
+                    <a href="/acc_info/{{acc['id']}}">{{acc['account']}}</a>
+                </th>
+                <th>{{acc['balance']}}</th>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+    <a href="add_acc" class="button">Add</a>
+</div>
+{% endblock %}

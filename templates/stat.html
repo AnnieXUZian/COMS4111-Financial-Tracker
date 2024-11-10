@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js library -->
+{% endblock %}
+{% block body %}
+
+<div class="chart-container">
+    <h1>Expense Statistic</h1>
+    <canvas id="myPieChart" width="400" height="400"></canvas>
+</div>
+
+<script>
+    // Toggle navbar on small screens
+    function toggleNavbar() {
+        document.querySelector('.navbar').classList.toggle('active');
+    }
+</script>
+<!-- Link to your external JavaScript file -->
+<script src="{{url_for('static', filename='pie.js')}}"></script>
+<script src="{{url_for('static', filename='filter.js')}}"></script>
+
+<!-- Inline script to pass dynamic data to JavaScript -->
+<script>
+    const chartData = {{ chart_data | tojson }};
+</script>
+
+
+{% endblock %}

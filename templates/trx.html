@@ -1,42 +1,43 @@
 {% extends 'base.html' %}
 {% block body %}
-<div class="block">
-    <h2>{{name}}</h2>
-        <table>
-            <tbody>
-                <tr>                
-                    <th>balance</th>
-                    <th>{{balance}}</th>
-                </tr>
-            </tbody>
-        </table>
-        <!-- <a href="add_acc" class="button">Add</a> -->
-</div>
-<div class="block">
-    <h2>{{name}} Transaction History</h2>
+<div class="trx-block">
+    <h2>User Transaction History</h2>
+
+    <div class="filter-container">
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date">
+    
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date">
+    
+        <button onclick="filterTransactions()">Filter</button>
+    </div>
 
     <!-- Transaction Table -->
-    <table>
+    <table id="transaction-table">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Category</th>
                 <th>Amount</th>
                 <th>Type</th>
+                <th>name</th>
             </tr>
         </thead>
         <tbody>
             <!-- Sample Data Rows (Replace these with actual dynamic data) -->
             {%for trx in trxs%}
-            <tr>
+            <tr data-date="{{trx['date']}}">
                 <th>{{trx['date']}}</th>
                 <th>{{trx['category']}}</th>
                 <th>{{trx['amount']}}</th>
                 <th>{{trx['type']}}</th>
+                <th>{{trx['account']}}</th>
             </tr>
             {%endfor%}
         </tbody>
     </table>
+    <a href="add_trx" class="button">Add</a>
 </div>
-<a href="/acc" class="button">Back</a>
+<script src="{{url_for('static', filename='filter.js')}}"></script>
 {% endblock %}

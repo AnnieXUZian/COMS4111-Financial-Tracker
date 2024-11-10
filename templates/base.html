@@ -8,6 +8,15 @@
         {% block head %}{% endblock %}
     </head>
     <body>
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="{{ url_for('trx') }}">Transactions</a>
+            <a href="{{ url_for('acc') }}">Accounts</a>
+            <a href="{{ url_for('stat') }}">Statistics</a>
+        </div>
+    </nav>
+    <div>
         {% block body %}{% endblock %}
+    </div>
     </body>
 </html>

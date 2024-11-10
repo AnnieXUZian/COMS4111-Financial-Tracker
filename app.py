@@ -44,7 +44,7 @@ def login():
         flash("User not found")
     elif result[1]==password:
         session['userid']=result[0]
-        return redirect('/profile')
+        return redirect('/trx')
     else:
         flash('wrong password!')
         
@@ -82,8 +82,8 @@ def create_account():
             return render_template('create_account.html')
     return render_template('create_account.html')
 
-@app.route("/profile")
-def transactions():
+@app.route("/trx")
+def trx():
     userid=session['userid']
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -97,8 +97,15 @@ def transactions():
     for row in trans:
         account, date, amount, category, type = row  # Unpack each tuple
         trxs.append({'account':account,'date':date,'amount':amount,'category':category,'type':type})
-    
-    
+    cursor.close()
+    conn.close()
+    return render_template('trx.html',trxs=trxs)
+
+@app.route("/acc")
+def acc():
+    userid=session['userid']
+    conn = get_db_connection()
+    cursor = conn.cursor()
     cursor.execute("select account_id,name, balance from Account where user_id= %s", (userid,))
     accounts = cursor.fetchall()
     accs=[]
@@ -110,6 +117,19 @@ def transactions():
                    from Transaction as T LEFT JOIN Category as C on T.category_id=C.category_id\
                    where trx_type='expense' and user_id=%s\
                    group by T.category_id,category_name",(userid,))
+    cursor.close()
+    conn.close()
+    return render_template('acc.html',accs=accs)
+
+@app.route("/stat")
+def stat():
+    userid=session['userid']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("select category_name, sum(amount)\
+                from Transaction as T LEFT JOIN Category as C on T.category_id=C.category_id\
+                where trx_type='expense' and user_id=%s\
+                group by T.category_id,category_name",(userid,))
     labels=[]
     values=[]
     sum=0
@@ -127,7 +147,7 @@ def transactions():
         }
     cursor.close()
     conn.close()
-    return render_template('transaction.html',trxs=trxs,accs=accs,chart_data=chart_data)
+    return render_template('stat.html',chart_data=chart_data)
 
 @app.route('/add_trx',methods=['GET', 'POST'])
 def add_trx():
@@ -149,7 +169,7 @@ def add_trx():
             conn.commit()
             cursor.close()
             conn.close()
-            return redirect('/profile')
+            return redirect('/trx')
         except:
             flash('Please fill all blanks!')
             return redirect('/add_trx')
@@ -190,7 +210,7 @@ def add_normal():
     conn.commit()
     cursor.close()
     conn.close()
-    return redirect('/profile')
+    return redirect('/acc')
 
 
 @app.route('/add_credit',methods=['POST'])
@@ -216,7 +236,7 @@ def add_credit():
     conn.commit()
     cursor.close()
     conn.close()
-    return redirect('/profile')
+    return redirect('/acc')
 
 @app.route('/acc_info/<int:id>')
 def acc_info(id):
