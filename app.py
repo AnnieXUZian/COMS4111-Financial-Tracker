@@ -22,7 +22,7 @@ def get_db_connection():
         port=DATABASE['port']
     )
     return conn
-##
+###
 
 
 @app.route('/')
