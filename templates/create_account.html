@@ -1,38 +1,46 @@
-{% extends 'base.html' %}
-{% block body %}
-<div class="login-screen">
-    <div class="app-title">
-        <h1>Create Account</h1>
-    </div>
-    <div class="login-form">
-        <form id="createAccountForm" action="/create_account" method="POST">
-            <div class="control-group">
-                <input type="text" class="login-field" value="" placeholder="Username" name="username" required>
-				<label class="login-field-icon fui-user" for="account-username"></label>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewpoint" content="=width=device-width initial-scale=1.0">
+        <meta http-equiv="=X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    </head>
+    <body>
+        <div class="login-screen">
+            <div class="app-title">
+                <h1>Create Account</h1>
             </div>
-            <div class="control-group">
-                <input type="text" class="login-field" value="" placeholder="Email" name="email" required>
-				<label class="login-field-icon fui-user" for="account-email"></label>
-            </div>
-            <div class="control-group">
-                <input type="text" class="login-field" value="" placeholder="Phone Number" name="phone" required>
-				<label class="login-field-icon fui-user" for="account-phone"></label>
-            </div>
-            <div class="control-group">
-                <input type="text" class="login-field" value="" placeholder="Password" name="password" required>
-				<label class="login-field-icon fui-user" for="account-password"></label>
-            </div>
-            <div class="control-group">
-                <input type="text" class="login-field" value="" placeholder="Comfirm Password" name="confirm-password" required>
-				<label class="login-field-icon fui-user" for="account-confirm-password"></label>
-            </div>
-            <input type="submit" value="Create Account" class="btn btn-primary btn-large btn-block">
-        </form>
-    
+            <div class="login-form">
+                <form id="createAccountForm" action="/create_account" method="POST">
+                    <div class="control-group">
+                        <input type="text" class="login-field" value="" placeholder="Username" name="username" required>
+                        <label class="login-field-icon fui-user" for="account-username"></label>
+                    </div>
+                    <div class="control-group">
+                        <input type="text" class="login-field" value="" placeholder="Email" name="email" required>
+                        <label class="login-field-icon fui-user" for="account-email"></label>
+                    </div>
+                    <div class="control-group">
+                        <input type="text" class="login-field" value="" placeholder="Phone Number" name="phone" required>
+                        <label class="login-field-icon fui-user" for="account-phone"></label>
+                    </div>
+                    <div class="control-group">
+                        <input type="text" class="login-field" value="" placeholder="Password" name="password" required>
+                        <label class="login-field-icon fui-user" for="account-password"></label>
+                    </div>
+                    <div class="control-group">
+                        <input type="text" class="login-field" value="" placeholder="Comfirm Password" name="confirm-password" required>
+                        <label class="login-field-icon fui-user" for="account-confirm-password"></label>
+                    </div>
+                    <input type="submit" value="Create Account" class="btn btn-primary btn-large btn-block">
+                </form>
+            
 
-        <div class="login-link">
-            <p>Already have an account? <a href="/">Login here</a></p>
+                <div class="login-link">
+                    <p>Already have an account? <a href="/">Login here</a></p>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-{% endblock %}
+    </body>
+</html>
