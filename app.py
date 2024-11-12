@@ -9,7 +9,7 @@ DATABASE = {
     'user': 'zx2514',
     'password': 'zx2514',
     'host': 'w4111.cisxo09blonu.us-east-1.rds.amazonaws.com',
-    'port': '8111'
+    'port': '5432'
 }
 
 # Function to create a new database connection
@@ -272,4 +272,4 @@ def acc_info(id):
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(12)
-    app.run(debug=True,host='0.0.0.0', port=4000)
+    app.run(debug=True,host='0.0.0.0', port=8111)
