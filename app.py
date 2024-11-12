@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort, g
 import os
 import psycopg2
 
@@ -23,7 +23,32 @@ def get_db_connection():
     )
     return conn
 ###
+@app.before_request
+def before_request():
+  """
+  This function is run at the beginning of every web request 
+  (every time you enter an address in the web browser).
+  We use it to setup a database connection that can be used throughout the request
 
+  The variable g is globally accessible
+  """
+  try:
+    g.conn=get_db_connection()
+  except:
+    print("uh oh, problem connecting to database")
+    import traceback; traceback.print_exc()
+    g.conn = None
+
+@app.teardown_request
+def teardown_request(exception):
+  """
+  At the end of the web request, this makes sure to close the database connection.
+  If you don't the database could run out of memory!
+  """
+  try:
+    g.conn.close()
+  except Exception as e:
+    pass
 
 @app.route('/')
 def home():
@@ -36,12 +61,12 @@ def login():
     password=request.form['password']
     username=request.form['username']
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select user_id, password from Users where user_name=%s", (username,))
     result = cursor.fetchone()
     cursor.close()
-    conn.close()
+    # conn.close()
     if not result:
         flash("User not found")
     elif result[1]==password:
@@ -71,12 +96,12 @@ def create_account():
             if password != confirm_password:
                 flash('Passwords do not match!')
                 return render_template('create_account.html')
-            conn = get_db_connection()
-            cursor = conn.cursor()
+            # conn = get_db_connection()
+            cursor = g.conn.cursor()
             cursor.execute("INSERT INTO Users (user_name, email, phone_number, password) VALUES (%s, %s, %s, %s)", (username, email,phone,password))
-            conn.commit()
+            g.conn.commit()
             cursor.close()
-            conn.close()
+            # conn.close()
             flash('Account created successfully! You can now log in.')
             return redirect('/')
         except:
@@ -87,8 +112,8 @@ def create_account():
 @app.route("/trx")
 def trx():
     userid=session['userid']
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select A.name, trx_date,amount,C.category_name,trx_type\
                     from (select * from Transaction where user_id= %s) as T \
                     join (select * from Account where user_id= %s) as A\
@@ -100,14 +125,14 @@ def trx():
         account, date, amount, category, type = row  # Unpack each tuple
         trxs.append({'account':account,'date':date,'amount':amount,'category':category,'type':type})
     cursor.close()
-    conn.close()
+    # conn.close()
     return render_template('trx.html',trxs=trxs)
 
 @app.route("/acc")
 def acc():
     userid=session['userid']
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select account_id,name, balance from Account where user_id= %s", (userid,))
     accounts = cursor.fetchall()
     accs=[]
@@ -120,14 +145,14 @@ def acc():
                    where trx_type='expense' and user_id=%s\
                    group by T.category_id,category_name",(userid,))
     cursor.close()
-    conn.close()
+    # conn.close()
     return render_template('acc.html',accs=accs)
 
 @app.route("/stat")
 def stat():
     userid=session['userid']
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select category_name, sum(amount)\
                 from Transaction as T LEFT JOIN Category as C on T.category_id=C.category_id\
                 where trx_type='expense' and user_id=%s\
@@ -148,7 +173,7 @@ def stat():
         "values": [i/sum for i in values]
         }
     cursor.close()
-    conn.close()
+    # conn.close()
     return render_template('stat.html',chart_data=chart_data)
 
 @app.route('/add_trx',methods=['GET', 'POST'])
@@ -161,39 +186,39 @@ def add_trx():
             amount=request.form['amount']
             type=request.form['type']
             account=request.form['account']
-            conn = get_db_connection()
-            cursor = conn.cursor()
+            # conn = get_db_connection()
+            cursor = g.conn.cursor()
             cursor.execute("select account_id from Account where name=%s and user_id=%s",(account, userid))
             accountid=cursor.fetchone()[0]
             cursor.execute("select category_id from Category where category_name=%s",(category,))
             categoryid=cursor.fetchone()[0]
             cursor.execute("INSERT INTO Transaction (user_id, account_id, trx_date, amount, category_id, trx_type) VALUES (%s, %s, %s, %s, %s, %s)", (userid, accountid,date,amount,categoryid,type))
-            conn.commit()
+            g.conn.commit()
             cursor.close()
-            conn.close()
+            # conn.close()
             return redirect('/trx')
         except:
             flash('Please fill all blanks!')
             return redirect('/add_trx')
     
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select name from Account where user_id= %s", (userid,))
     accounts = cursor.fetchall()
     cursor.execute("select category_name from Category")
     categories = cursor.fetchall()
     cursor.close()
-    conn.close()
+    # conn.close()
     return render_template('add_trx.html',accounts=accounts,categories=categories)
 
 @app.route('/add_acc')
 def add_account():
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select bank_name from Bank")
     result=cursor.fetchall()
     cursor.close()
-    conn.close()
+    # conn.close()
     return render_template('add_acc.html',banks=result)
 
 
@@ -204,14 +229,14 @@ def add_normal():
     bank=request.form['bank']
     name=request.form['name']
     balance=request.form['balance']
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select bank_id from Bank where bank_name= %s", (bank,))
     bankid = cursor.fetchall()[0]
     cursor.execute("INSERT INTO Account (user_id, bank_id, name, balance) VALUES (%s, %s, %s, %s)", (userid, bankid,name,balance))
-    conn.commit()
+    g.conn.commit()
     cursor.close()
-    conn.close()
+    # conn.close()
     return redirect('/acc')
 
 
@@ -226,24 +251,24 @@ def add_credit():
     credit_limit=request.form['credit-limit']
     interest_rate=request.form['interest-rate']
     available_credit=request.form['available-credit']
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select bank_id from Bank where bank_name= %s", (bank,))
     bankid = cursor.fetchall()[0]
     cursor.execute("INSERT INTO Account (user_id, bank_id, name, balance) VALUES (%s, %s, %s, %s)", (userid, bankid,name,balance))
-    conn.commit()
+    g.conn.commit()
     cursor.execute("select account_id from Account where user_id=%s and name=%s", (userid,name))
     accountid=cursor.fetchall()[0]
     cursor.execute("INSERT INTO Credit_Card (user_id, account_id, settlement_day, payment_day, available_credit, credit_limit, interest_rate) VALUES (%s, %s, %s, %s, %s, %s, %s)", (userid, accountid,settlement_day, payment_day, available_credit, credit_limit, interest_rate))
-    conn.commit()
+    g.conn.commit()
     cursor.close()
-    conn.close()
+    # conn.close()
     return redirect('/acc')
 
 @app.route('/acc_info/<int:id>')
 def acc_info(id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # conn = get_db_connection()
+    cursor = g.conn.cursor()
     cursor.execute("select name,balance from Account where account_id=%s",(id,))
     name,balance=cursor.fetchall()[0]
     cursor.execute("select trx_date, amount, category_name, trx_type\
@@ -260,13 +285,13 @@ def acc_info(id):
     if res!=[]: #credit card
         settlement_day, payment_day, available_credit, credit_limit, interest_rate=res[0]
         cursor.close()
-        conn.close()
+        # conn.close()
         return render_template('credit.html',\
                                name=name,balance=balance,trxs=trxs,\
                                settlement_day=settlement_day, payment_day=payment_day, \
                                 available_credit=available_credit, credit_limit=credit_limit, interest_rate= interest_rate)
     cursor.close()
-    conn.close()
+    # conn.close()
     return render_template('normal_acc.html',name=name,balance=balance,trxs=trxs)
     
     
