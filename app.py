@@ -9,7 +9,7 @@ DATABASE = {
     'user': 'zx2514',
     'password': 'zx2514',
     'host': 'w4111.cisxo09blonu.us-east-1.rds.amazonaws.com',
-    'port': '5432'
+    'port': '8111'
 }
 
 # Function to create a new database connection
