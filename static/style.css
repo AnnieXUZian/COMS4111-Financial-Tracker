@@ -290,3 +290,18 @@
             display: flex;
         }
     }
+    .logout-container {
+        margin-left: auto; /* Pushes the logout button to the far right */
+    }
+    
+    .logout-button {
+        color: red;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 10px 20px;
+    }
+    
+    .logout-button:hover {
+        background-color: red;
+        color: white;
+    }

@@ -27,6 +27,8 @@ def get_db_connection():
 
 @app.route('/')
 def home():
+    if 'userid' in session:
+        return redirect('/trx')
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -52,8 +54,8 @@ def login():
 
 @app.route("/logout")
 def logout():
-    # session['logged_in'] = False
-    return home()
+    session.pop('userid', None)
+    return redirect('/')
 
 @app.route("/create_account", methods=['GET', 'POST'])
 def create_account():
