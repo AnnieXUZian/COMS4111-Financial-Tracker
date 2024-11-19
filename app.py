@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort, g
+from flask import Flask, flash, redirect, render_template, request, session, g
 import os
 import psycopg2
 
@@ -298,5 +298,20 @@ def acc_info(id):
 
 
 if __name__ == "__main__":
-    app.secret_key = os.urandom(12)
-    app.run(debug=True,host='0.0.0.0', port=8111)
+    import click
+
+    @click.command()
+    @click.option('--debug', is_flag=True)
+    @click.option('--threaded', is_flag=True)
+    @click.argument('HOST', default='0.0.0.0')
+    @click.argument('PORT', default=8111, type=int)
+    def run(debug, threaded, host, port):
+
+    # HOST, PORT = host, port
+    # print("running on %s:%d" % (HOST, PORT))
+        app.secret_key = os.urandom(12)
+        app.run(debug=True,host='0.0.0.0', port=8111)
+
+
+    run()
+    
