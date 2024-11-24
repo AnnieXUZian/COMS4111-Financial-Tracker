@@ -139,6 +139,8 @@ def acc():
     for row in accounts:
         id, account,balance=row
         accs.append({'id':id,'account':account,'balance':balance})
+        if balance < 0:
+            has_negative_balance = True
     
     cursor.execute("select category_name, sum(amount)\
                    from Transaction as T LEFT JOIN Category as C on T.category_id=C.category_id\
@@ -146,7 +148,7 @@ def acc():
                    group by T.category_id,category_name",(userid,))
     cursor.close()
     # conn.close()
-    return render_template('acc.html',accs=accs)
+    return render_template('acc.html',accs=accs, has_negative_balance=has_negative_balance)
 
 @app.route("/stat")
 def stat():
