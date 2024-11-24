@@ -1,18 +1,9 @@
 {% extends 'base.html' %}
-{% block head %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js library -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-{% endblock %}
 
 {% block body %}
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-warning">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
+{% if alert %}
+    <div>one or more accounts have balance lower than the budget!!!</div>
+{% endif %}
 <div class="acc-block">
     <h2>Accounts</h2>
     <table>
