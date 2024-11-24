@@ -133,23 +133,18 @@ def acc():
     userid=session['userid']
     # conn = get_db_connection()
     cursor = g.conn.cursor()
-    cursor.execute("select account_id,name, balance from Account where user_id= %s", (userid,))
+    cursor.execute("select account_id,name, balance, budget from Account where user_id= %s", (userid,))
     accounts = cursor.fetchall()
     accs=[]
+    negative=False
     for row in accounts:
-        id, account,balance=row
+        id, account,balance, budget=row
         accs.append({'id':id,'account':account,'balance':balance})
-        if balance < 0:
-            flash('One or more of your accounts have a negative balance!')
-            break 
-    
-    cursor.execute("select category_name, sum(amount)\
-                   from Transaction as T LEFT JOIN Category as C on T.category_id=C.category_id\
-                   where trx_type='expense' and user_id=%s\
-                   group by T.category_id,category_name",(userid,))
+        if balance < budget:
+            negative=True
     cursor.close()
     # conn.close()
-    return render_template('acc.html',accs=accs)
+    return render_template('acc.html',accs=accs,alert=negative)
 
 @app.route("/stat")
 def stat():
@@ -232,11 +227,12 @@ def add_normal():
     bank=request.form['bank']
     name=request.form['name']
     balance=request.form['balance']
+    budget=request.form['budget']
     # conn = get_db_connection()
     cursor = g.conn.cursor()
     cursor.execute("select bank_id from Bank where bank_name= %s", (bank,))
     bankid = cursor.fetchall()[0]
-    cursor.execute("INSERT INTO Account (user_id, bank_id, name, balance) VALUES (%s, %s, %s, %s)", (userid, bankid,name,balance))
+    cursor.execute("INSERT INTO Account (user_id, bank_id, name, balance,budget) VALUES (%s, %s, %s, %s,%s)", (userid, bankid,name,balance,budget))
     g.conn.commit()
     cursor.close()
     # conn.close()
@@ -249,6 +245,7 @@ def add_credit():
     bank=request.form['bank']
     name=request.form['name']
     balance=request.form['balance']
+    budget=request.form['budget']
     settlement_day=request.form['settlement-day']
     payment_day=request.form['payment-day']
     credit_limit=request.form['credit-limit']
@@ -258,7 +255,7 @@ def add_credit():
     cursor = g.conn.cursor()
     cursor.execute("select bank_id from Bank where bank_name= %s", (bank,))
     bankid = cursor.fetchall()[0]
-    cursor.execute("INSERT INTO Account (user_id, bank_id, name, balance) VALUES (%s, %s, %s, %s)", (userid, bankid,name,balance))
+    cursor.execute("INSERT INTO Account (user_id, bank_id, name, balance,budget) VALUES (%s, %s, %s, %s,%s)", (userid, bankid,name,balance,budget))
     g.conn.commit()
     cursor.execute("select account_id from Account where user_id=%s and name=%s", (userid,name))
     accountid=cursor.fetchall()[0]
