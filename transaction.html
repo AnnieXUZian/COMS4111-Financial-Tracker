@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js library -->
+{% endblock %}
+{% block body %}
+<!-- <nav class="navbar">
+    <div class="logo">MyLogo</div>
+    <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#chart-container">Statistics</a>
+    </div>
+    <div class="toggle-button" onclick="toggleNavbar()">☰</div>
+</nav> -->
+<!-- <nav class="navbar">
+    <div class="nav-links">
+        <a href="{{ url_for('trx') }}">transactions</a>
+        <a href="{{ url_for('acc') }}">cards</a>
+    </div>
+</nav> -->
+
+<div class="container">
+    <div class="left-block">
+        <h2>User Transaction History</h2>
+
+        <div class="filter-container">
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date">
+        
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date">
+        
+            <button onclick="filterTransactions()">Filter</button>
+        </div>
+
+        <!-- Transaction Table -->
+        <table id="transaction-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sample Data Rows (Replace these with actual dynamic data) -->
+                {%for trx in trxs%}
+                <tr data-date="{{trx['date']}}">
+                    <th>{{trx['date']}}</th>
+                    <th>{{trx['category']}}</th>
+                    <th>{{trx['amount']}}</th>
+                    <th>{{trx['type']}}</th>
+                    <th>{{trx['account']}}</th>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <a href="add_trx" class="button">Add</a>
+    </div>
+    <div class="right-block">
+        <h2>Accounts</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Accounts</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Sample Data Rows (Replace these with actual dynamic data) -->
+                {%for acc in accs%}
+                <tr>                
+                    <th>
+                        <a href="/acc_info/{{acc['id']}}">{{acc['account']}}</a>
+                    </th>
+                    <th>{{acc['balance']}}</th>
+                </tr>
+                {%endfor%}
+            </tbody>
+        </table>
+        <a href="add_acc" class="button">Add</a>
+    </div>
+</div>
+
+<div class="chart-container">
+    <h1>Expense Statistic</h1>
+    <canvas id="myPieChart" width="400" height="400"></canvas>
+</div>
+
+<script>
+    // Toggle navbar on small screens
+    function toggleNavbar() {
+        document.querySelector('.navbar').classList.toggle('active');
+    }
+</script>
+<!-- Link to your external JavaScript file -->
+<script src="{{url_for('static', filename='pie.js')}}"></script>
+<script src="{{url_for('static', filename='filter.js')}}"></script>
+
+<!-- Inline script to pass dynamic data to JavaScript -->
+<script>
+    const chartData = {{ chart_data | tojson }};
+</script>
+
+
+{% endblock %}
